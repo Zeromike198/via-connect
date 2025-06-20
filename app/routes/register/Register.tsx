@@ -21,26 +21,26 @@ import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Route } from './+types/Register';
+import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group';
 
 const formSchema = z.object({
-  nombre: z.string().min(2, {
+  name: z.string().min(2, {
     message: 'El nombre debe tener al menos 2 caracteres.',
   }),
-  apellido: z.string().min(2, {
+  lastName: z.string().min(2, {
     message: 'El apellido debe tener al menos 2 caracteres.',
   }),
   email: z.string().email({
     message: 'Por favor ingresa un correo electrónico válido.',
   }),
+  role: z.enum(['driver', 'passenger']),
   password: z.string().min(6, {
     message: 'La contraseña debe tener al menos 6 caracteres.',
   }),
 });
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Registro | Via Connect' },
-  ];
+  return [{ title: 'Registro | Via Connect' }];
 }
 export default function Register() {
   //states
@@ -50,9 +50,10 @@ export default function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nombre: '',
-      apellido: '',
+      name: '',
+      lastName: '',
       email: '',
+      role: 'passenger',
       password: '',
     },
   });
@@ -61,7 +62,7 @@ export default function Register() {
     setIsLoading(true);
 
     // Simular una llamada a la API
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     console.log(values);
     alert('¡Registro exitoso! Revisa la consola para ver los datos.');
@@ -86,7 +87,7 @@ export default function Register() {
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <FormField
                 control={form.control}
-                name='nombre'
+                name='name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nombre</FormLabel>
@@ -107,7 +108,7 @@ export default function Register() {
 
               <FormField
                 control={form.control}
-                name='apellido'
+                name='lastName'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Apellido</FormLabel>
@@ -141,6 +142,34 @@ export default function Register() {
                           className='pl-10'
                           {...field}
                         />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='role'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className=' flex justify-center'>Rol</FormLabel>
+                    <FormControl>
+                      <div className='w-full mx-auto flex justify-center'>
+                        <ToggleGroup
+                          type='single'
+                          variant='outline'
+                          value={field.value}
+                          onValueChange={(value) => field.onChange(value)}
+                        >
+                          <ToggleGroupItem value='passenger'>
+                            Pasajero
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value='driver'>
+                            Chofer
+                          </ToggleGroupItem>
+                        </ToggleGroup>
                       </div>
                     </FormControl>
                     <FormMessage />

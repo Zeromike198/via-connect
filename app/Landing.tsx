@@ -43,7 +43,11 @@ export default function Landing() {
           <Button variant='ghost' size='sm'>
             Iniciar Sesión
           </Button>
-          <Button size='sm' className='bg-blue-600 hover:bg-blue-700'>
+          <Button
+            size='sm'
+            className='bg-blue-600 hover:bg-blue-700'
+            onClick={() => navigate('/register')}
+          >
             Registrarse
           </Button>
         </div>
@@ -94,11 +98,11 @@ export default function Landing() {
               </div>
               <div className='w-full flex items-center justify-center'>
                 <img
-                  src="/bus.png"
-                  width="600"
-                  height="400"
-                  alt="Via Connect App"
-                  className="mx-auto overflow-hidden rounded-xl object-cover shadow-xl"
+                  src='/bus.png'
+                  width='600'
+                  height='400'
+                  alt='Via Connect App'
+                  className='mx-auto overflow-hidden rounded-xl object-cover shadow-xl'
                 />
               </div>
             </div>
