@@ -4,6 +4,9 @@ import { Button } from './components/ui/button';
 import { Card, CardContent } from './components/ui/card';
 import { Badge } from './components/ui/badge';
 import type { Route } from './+types/root';
+import { useEffect, useState } from 'react';
+import { toast, Toaster } from 'sonner';
+import { Skeleton } from './components/ui/skeleton';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,8 +18,42 @@ export function meta({}: Route.MetaArgs) {
 export default function Landing() {
   const navigate = useNavigate();
 
+  //states
+  const [userLoader, setUserLoader] = useState<boolean>(false);
+  const [totalUser, setTotalUser] = useState<number>(0);
+
+  //functions
+  const handleGetUsers = async () => {
+    setUserLoader(true);
+    try {
+      const req = await fetch('http://localhost:3000/');
+      const res: { response: string } = await req.json();
+
+      if (!req.ok) throw new Error(res.response);
+
+      setTotalUser(parseInt(res.response));
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.response, {
+        cancel: true,
+      });
+    } finally {
+      setUserLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetUsers();
+  }, []);
+
   return (
     <div className='flex flex-col min-h-screen'>
+      <Toaster
+        position='bottom-center'
+        richColors
+        closeButton
+        visibleToasts={1}
+      />
       {/* Header */}
       <header className='px-4 lg:px-6 h-16 flex items-center border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50'>
         <Link className='flex items-center justify-center' to={'/'}>
@@ -88,7 +125,11 @@ export default function Landing() {
                 <div className='flex items-center gap-4 text-sm text-gray-600'>
                   <div className='flex items-center gap-1'>
                     <Users className='h-4 w-4' />
-                    <span>+10,000 usuarios</span>
+                    {userLoader ? (
+                      <Skeleton className='w-16 h-4 bg-slate-500' />
+                    ) : (
+                      <span>+{totalUser - 1} usuarios</span>
+                    )}
                   </div>
                   {/* <div className='flex items-center gap-1'>
                     <Star className='h-4 w-4 fill-yellow-400 text-yellow-400' />

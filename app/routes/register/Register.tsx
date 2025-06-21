@@ -74,17 +74,16 @@ export default function Register() {
         body: JSON.stringify(values),
       });
 
-      const res: { message: string } = await req.json();
+      const res: { response: string } = await req.json();
 
-      if (!req.ok) {
-        throw new Error(res.message);
-      }
+      if (!req.ok) throw new Error(res.response);
+      
 
       form.reset();
       navigate('/home');
     } catch (err: any) {
       console.log(err);
-      toast.error(err.message, {
+      toast.error(err.response, {
         cancel: true,
       });
     } finally {
