@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, User, Mail, Lock, LoaderCircle } from 'lucide-react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
   Card,
@@ -22,6 +22,8 @@ import { Button } from '~/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Route } from './+types/Register';
 import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group';
+import { toast, Toaster } from 'sonner';
+import { useNavigate } from 'react-router';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -43,6 +45,8 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: 'Registro | Via Connect' }];
 }
 export default function Register() {
+  const navigate = useNavigate();
+
   //states
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -62,8 +66,6 @@ export default function Register() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      console.log(values);
-
       const req = await fetch('http://localhost:3000/register', {
         method: 'POST',
         headers: {
@@ -72,10 +74,19 @@ export default function Register() {
         body: JSON.stringify(values),
       });
 
-      const res = await req.json();
-      console.log(res);
-      // form.reset();
-    } catch (err) {
+      const res: { message: string } = await req.json();
+
+      if (!req.ok) {
+        throw new Error(res.message);
+      }
+
+      form.reset();
+      navigate('/home');
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.message, {
+        cancel: true,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -86,6 +97,12 @@ export default function Register() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
+      <Toaster
+        position='bottom-center'
+        richColors
+        closeButton
+        visibleToasts={1}
+      />
       <Card className='w-full max-w-xl'>
         <CardHeader className='space-y-1'>
           <CardTitle className='text-3xl font-bold text-center'>
@@ -261,7 +278,8 @@ export default function Register() {
                   form.getFieldState('password').invalid ||
                   watchValue.name.length < 2 ||
                   watchValue.lastName.length < 1 ||
-                  watchValue.email.length < 8
+                  watchValue.email.length < 8 ||
+                  watchValue.password.length < 5
                 }
               >
                 {isLoading ? (
