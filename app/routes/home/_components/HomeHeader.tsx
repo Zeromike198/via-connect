@@ -13,7 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import {  LogOut, UserRound } from 'lucide-react';
+import { LogOut, UserRound } from 'lucide-react';
+import { Badge } from '~/components/ui/badge';
 
 export default function HomeHeader() {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ export default function HomeHeader() {
   }, []);
 
   return (
-    <header className='px-4 lg:px-6 h-16 flex items-center border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50'>
+    <header className='px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50'>
       <Link className='flex items-center justify-center' to={'/home'}>
         <img src='/favicon.png' className='w-8 h-8' />
         <span className='ml-1 text-md font-bold text-gray-900'>
@@ -80,45 +81,49 @@ export default function HomeHeader() {
           Testimonios
         </Link>
       </nav> */}
-      <div className='ml-4 flex gap-2'>
-        {/* <Button variant='ghost' size='sm'>
-          Iniciar Sesión
-        </Button> */}
-
+      <div className='flex gap-3 items-center'>
         {loading || user === undefined ? (
-          <Skeleton className='h-8 w-8 rounded-full bg-gray-400' />
+          <>
+            <Skeleton className='h-5 w-24 bg-gray-400 rounded-full' />
+            <Skeleton className='h-8 w-8 rounded-full bg-gray-400' />
+          </>
         ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className='cursor-pointer'>
-                <AvatarImage src={user.image} alt={user.name} />
-                <AvatarFallback>NF</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='w-42 mx-5'>
-              <DropdownMenuLabel>
-                <span className='font-semibold'>Opciones</span>
-                {/* {user.role === 'passenger' ? 'Pasajero' : 'Chofer'} */}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className='justify-between cursor-pointer'
-                onClick={() => navigate('/profile')}
-              >
-                <span className='font-medium'>Perfil</span> <UserRound />
-              </DropdownMenuItem>
+          <>
+            <Badge variant='default' className='font-semibold bg-blue-600'>
+              {user.role === 'passenger' ? 'Pasajero' : 'Chofer'}
+            </Badge>
 
-              <DropdownMenuItem
-                className='justify-between cursor-pointer'
-                onClick={handleCloseSession}
-              >
-                <span className='font-medium text-destructive'>
-                  Cerrar Sesión
-                </span>{' '}
-                <LogOut className='text-destructive' />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className='cursor-pointer'>
+                  <AvatarImage src={user.image} alt={user.name} />
+                  <AvatarFallback>NF</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-42 mx-5'>
+                <DropdownMenuLabel>
+                  <span className='font-semibold'>Opciones</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className='justify-between cursor-pointer'
+                  onClick={() => navigate('/profile')}
+                >
+                  <span className='font-medium'>Perfil</span> <UserRound />
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  className='justify-between cursor-pointer'
+                  onClick={handleCloseSession}
+                >
+                  <span className='font-medium text-destructive'>
+                    Cerrar Sesión
+                  </span>{' '}
+                  <LogOut className='text-destructive' />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
         )}
       </div>
     </header>

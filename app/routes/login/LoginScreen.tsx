@@ -2,11 +2,11 @@ import { useState } from 'react';
 import {
   Eye,
   EyeOff,
-  User,
   Mail,
   Lock,
   LoaderCircle,
   ArrowLeft,
+  LogIn,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -28,44 +28,30 @@ import {
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group';
 import { toast, Toaster } from 'sonner';
 import { useNavigate } from 'react-router';
-import type { Route } from './+types/RegisterScreen';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
 import { API_URL, USER_ID_KEY } from 'constants/constants';
+import type { Route } from '../../+types/root';
 
 const formSchema = z.object({
-  name: z
-    .string({ message: 'El nombre debe ser un texto' })
-    .min(2, { message: 'El nombre debe tener al menos 2 caracteres.' })
-    .regex(/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/, {
-      message: 'El nombre solo puede contener letras y espacios.',
-    }),
-  lastName: z
-    .string({ message: 'El apellido debe ser un texto' })
-    .min(2, { message: 'El apellido debe tener al menos 2 caracteres.' })
-    .regex(/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/, {
-      message: 'El apellido solo puede contener letras y espacios.',
-    }),
   email: z.string().email({
     message: 'Por favor ingresa un correo electrónico válido.',
   }),
-  role: z.enum(['driver', 'passenger']),
   password: z.string().min(6, {
     message: 'La contraseña debe tener al menos 6 caracteres.',
   }),
 });
 
 export function meta({}: Route.MetaArgs) {
-  return [{ title: 'Registro | Via Connect' }];
+  return [{ title: 'Incio de Sesión | Via Connect' }];
 }
 
-export default function RegisterScreen() {
+export default function LoginScreen() {
   const navigate = useNavigate();
 
   //states
@@ -76,10 +62,7 @@ export default function RegisterScreen() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      lastName: '',
       email: '',
-      role: 'passenger',
       password: '',
     },
   });
@@ -87,7 +70,7 @@ export default function RegisterScreen() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const req = await fetch(`${API_URL}/register`, {
+      const req = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -139,62 +122,15 @@ export default function RegisterScreen() {
       <Card className='w-full max-w-xl'>
         <CardHeader className='space-y-1'>
           <CardTitle className='text-3xl font-bold text-center'>
-            Crear cuenta
+            Iniciar Sesión
           </CardTitle>
           <CardDescription className='text-center'>
-            Ingresa tus datos para registrarte
+            Ingresa tus datos para iniciar sesión
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              {/* Name */}
-              <FormField
-                control={form.control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='gap-1'>
-                      Nombre <span className='text-red-500 font-bold'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative'>
-                        <User className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
-                        <Input
-                          placeholder='Ingresa tu nombre'
-                          className='pl-10'
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* LastName */}
-              <FormField
-                control={form.control}
-                name='lastName'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='gap-1'>
-                      Apellido <span className='text-red-500 font-bold'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative'>
-                        <User className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
-                        <Input
-                          placeholder='Ingresa tu apellido'
-                          className='pl-10'
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               {/* Email */}
               <FormField
                 control={form.control}
@@ -214,45 +150,6 @@ export default function RegisterScreen() {
                           className='pl-10'
                           {...field}
                         />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Role */}
-              <FormField
-                control={form.control}
-                name='role'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='justify-center gap-1'>
-                      Rol
-                      <span className='text-red-500 font-bold'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <div className='w-full mx-auto flex justify-center'>
-                        <ToggleGroup
-                          type='single'
-                          variant='outline'
-                          value={field.value}
-                          defaultValue={field.value}
-                          onValueChange={(value) => field.onChange(value)}
-                        >
-                          <ToggleGroupItem
-                            value='passenger'
-                            className='cursor-pointer'
-                          >
-                            Pasajero
-                          </ToggleGroupItem>
-                          <ToggleGroupItem
-                            value='driver'
-                            className='cursor-pointer'
-                          >
-                            Chofer
-                          </ToggleGroupItem>
-                        </ToggleGroup>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -304,38 +201,38 @@ export default function RegisterScreen() {
                 className='w-full bg-blue-600 hover:bg-blue-700'
                 disabled={
                   isLoading ||
-                  form.getFieldState('name').invalid ||
-                  form.getFieldState('lastName').invalid ||
                   form.getFieldState('email').invalid ||
-                  !form.getFieldState('role').invalid ||
                   form.getFieldState('password').invalid ||
-                  watchValue.name.length < 2 ||
-                  watchValue.lastName.length < 1 ||
                   watchValue.email.length < 8 ||
                   watchValue.password.length < 5
                 }
               >
                 {isLoading ? (
                   <>
-                    <LoaderCircle className='w-4 h-4 animate-spin' />{' '}
-                    Registrando...
+                    <LoaderCircle className='w-4 h-4 animate-spin' /> Iniciando
+                    sesión...
                   </>
                 ) : (
-                  'Registrarse'
+                  <>
+                    Iniciar Sesión
+                    <LogIn />
+                  </>
                 )}
               </Button>
             </form>
           </Form>
 
-          <div className='mt-6 flex justify-center items-center gap-1'>
-            <p className='text-sm text-gray-600'>¿Ya tienes una cuenta?</p>
-            <Button
-              variant='link'
-              onClick={() => navigate('/login')}
-              className='font-medium text-blue-600 hover:text-blue-500 p-0'
-            >
-              Iniciar sesión
-            </Button>
+          <div className='mt-6 text-center'>
+            <p className='text-sm text-gray-600'>
+              ¿No tienes una cuenta?{' '}
+              <Button
+                variant='link'
+                onClick={() => navigate('/register')}
+                className='font-medium text-blue-600 hover:text-blue-500 p-0'
+              >
+                Registrarse
+              </Button>
+            </p>
           </div>
         </CardContent>
       </Card>
