@@ -1,6 +1,15 @@
 describe('Landing Page', () => {
-  it('load total users', () => {
+  it('Obtener total de usuarios', () => {
+    cy.intercept('GET', 'http://localhost:3000/').as('getUsers');
+
     cy.visit('http://localhost:5173/');
+
+    cy.wait('@getUsers').then((interception) => {
+      if (!interception.response) {
+        throw new Error('No hubo respuesta del servidor');
+      }
+      expect([200, 304]).to.include(interception.response.statusCode);
+    });
   });
 });
 

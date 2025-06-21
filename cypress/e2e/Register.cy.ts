@@ -5,7 +5,7 @@ describe('Register Page', () => {
     cy.contains('button', 'Registrarse').should('be.disabled');
   });
 
-  it('datos incorrectos', () => {
+  it('Datos incorrectos', () => {
     cy.visit('http://localhost:5173/register');
 
     cy.get('input[name="name"]').type('1332333');
@@ -16,7 +16,7 @@ describe('Register Page', () => {
     cy.contains('button', 'Registrarse').click();
   });
 
-  it('datos numericos', () => {
+  it('Datos numericos', () => {
     cy.visit('http://localhost:5173/register');
 
     cy.get('input[name="name"]').type('1332333');
@@ -36,7 +36,7 @@ describe('Register Page', () => {
     ).should('be.visible');
   });
 
-  it('datos correctos', () => {
+  it('Datos correctos', () => {
     cy.intercept('POST', 'http://localhost:3000/register').as('postRegister');
 
     cy.visit('http://localhost:5173/register');
@@ -52,7 +52,7 @@ describe('Register Page', () => {
     cy.wait('@postRegister').its('response.statusCode').should('eq', 200);
   });
 
-  it('correo existente', () => {
+  it('Correo registrado', () => {
     cy.intercept('POST', 'http://localhost:3000/register').as('postRegister');
 
     cy.visit('http://localhost:5173/register');

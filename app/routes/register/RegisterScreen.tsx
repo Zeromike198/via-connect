@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Eye, EyeOff, User, Mail, Lock, LoaderCircle } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  Lock,
+  LoaderCircle,
+  ArrowLeft,
+} from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -26,6 +34,11 @@ import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group';
 import { toast, Toaster } from 'sonner';
 import { useNavigate } from 'react-router';
 import type { Route } from './+types/RegisterScreen';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '~/components/ui/tooltip';
 
 const formSchema = z.object({
   name: z
@@ -109,6 +122,19 @@ export default function RegisterScreen() {
         closeButton
         visibleToasts={1}
       />
+
+      <div className='absolute top-0 left-0 p-4'>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='outline' onClick={() => navigate('/')}>
+              <ArrowLeft />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='left'>
+            <p>Regresar</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
       <Card className='w-full max-w-xl'>
         <CardHeader className='space-y-1'>
           <CardTitle className='text-3xl font-bold text-center'>

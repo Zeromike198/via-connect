@@ -122,10 +122,12 @@ export default function LandingScreen() {
                 <div className='flex items-center gap-4 text-sm text-gray-600'>
                   <div className='flex items-center gap-1'>
                     <Users className='h-4 w-4' />
-                    {userLoader || typeof totalUser !== 'number' ? (
+                    {userLoader ||
+                    typeof totalUser !== 'number' ||
+                    totalUser < 1 ? (
                       <Skeleton className='w-16 h-4 bg-slate-500' />
                     ) : (
-                      <span>+{totalUser - 1} usuarios</span>
+                      <span>+{totalUser} usuarios</span>
                     )}
                   </div>
                   {/* <div className='flex items-center gap-1'>
