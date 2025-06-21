@@ -9,18 +9,15 @@ import { toast, Toaster } from 'sonner';
 import { Skeleton } from './components/ui/skeleton';
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Via Connect' },
-    { name: 'description', content: 'Welcome to Via Connect' },
-  ];
+  return [{ title: 'Via Connect' }];
 }
 
-export default function Landing() {
+export default function LandingScreen() {
   const navigate = useNavigate();
 
   //states
   const [userLoader, setUserLoader] = useState<boolean>(false);
-  const [totalUser, setTotalUser] = useState<number>(0);
+  const [totalUser, setTotalUser] = useState<number | undefined>(undefined);
 
   //functions
   const handleGetUsers = async () => {
@@ -125,7 +122,7 @@ export default function Landing() {
                 <div className='flex items-center gap-4 text-sm text-gray-600'>
                   <div className='flex items-center gap-1'>
                     <Users className='h-4 w-4' />
-                    {userLoader ? (
+                    {userLoader || typeof totalUser !== 'number' ? (
                       <Skeleton className='w-16 h-4 bg-slate-500' />
                     ) : (
                       <span>+{totalUser - 1} usuarios</span>
@@ -232,122 +229,6 @@ export default function Landing() {
             </div>
           </div>
         </section>
-
-        {/* Pricing Section */}
-        {/* <section id='pricing' className='w-full py-12 md:py-24 lg:py-32'>
-          <div className='container px-4 md:px-6'>
-            <div className='flex flex-col items-center justify-center space-y-4 text-center'>
-              <div className='space-y-2'>
-                <Badge variant='secondary'>Planes</Badge>
-                <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl'>
-                  Elige el plan perfecto para ti
-                </h2>
-                <p className='max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
-                  Opciones flexibles para usuarios individuales y comunidades
-                </p>
-              </div>
-            </div>
-            <div className='mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3'>
-              <Card className='p-6 border-2'>
-                <CardContent className='space-y-4 p-0'>
-                  <div className='space-y-2'>
-                    <h3 className='text-2xl font-bold'>Básico</h3>
-                    <div className='flex items-baseline gap-1'>
-                      <span className='text-3xl font-bold'>Gratis</span>
-                    </div>
-                    <p className='text-gray-600'>Perfecto para comenzar</p>
-                  </div>
-                  <ul className='space-y-2'>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Hasta 5 viajes por mes</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Búsqueda básica de rutas</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Chat con conductores</span>
-                    </li>
-                  </ul>
-                  <Button className='w-full' variant='outline'>
-                    Comenzar Gratis
-                  </Button>
-                </CardContent>
-              </Card>
-              <Card className='p-6 border-2 border-blue-600 relative'>
-                <Badge className='absolute -top-2 left-1/2 transform -translate-x-1/2 bg-blue-600'>
-                  Más Popular
-                </Badge>
-                <CardContent className='space-y-4 p-0'>
-                  <div className='space-y-2'>
-                    <h3 className='text-2xl font-bold'>Premium</h3>
-                    <div className='flex items-baseline gap-1'>
-                      <span className='text-3xl font-bold'>$9.99</span>
-                      <span className='text-gray-600'>/mes</span>
-                    </div>
-                    <p className='text-gray-600'>Para usuarios frecuentes</p>
-                  </div>
-                  <ul className='space-y-2'>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Viajes ilimitados</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Rutas optimizadas con IA</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Soporte prioritario</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Estadísticas detalladas</span>
-                    </li>
-                  </ul>
-                  <Button className='w-full bg-blue-600 hover:bg-blue-700'>
-                    Elegir Premium
-                  </Button>
-                </CardContent>
-              </Card>
-              <Card className='p-6 border-2'>
-                <CardContent className='space-y-4 p-0'>
-                  <div className='space-y-2'>
-                    <h3 className='text-2xl font-bold'>Comunidad</h3>
-                    <div className='flex items-baseline gap-1'>
-                      <span className='text-3xl font-bold'>$29.99</span>
-                      <span className='text-gray-600'>/mes</span>
-                    </div>
-                    <p className='text-gray-600'>Para organizaciones</p>
-                  </div>
-                  <ul className='space-y-2'>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Hasta 100 usuarios</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Panel de administración</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Reportes avanzados</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <Check className='h-4 w-4 text-green-600' />
-                      <span className='text-sm'>Integración personalizada</span>
-                    </li>
-                  </ul>
-                  <Button className='w-full' variant='outline'>
-                    Contactar Ventas
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section> */}
 
         {/* Final CTA Section */}
         {/* <section className='w-full py-12 md:py-24 lg:py-32 bg-blue-600'>

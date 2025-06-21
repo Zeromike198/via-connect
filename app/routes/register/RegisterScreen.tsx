@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { Eye, EyeOff, User, Mail, Lock, LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -20,10 +22,10 @@ import {
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { Route } from './+types/Register';
 import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group';
 import { toast, Toaster } from 'sonner';
 import { useNavigate } from 'react-router';
+import type { Route } from './+types/RegisterScreen';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -44,7 +46,7 @@ const formSchema = z.object({
 export function meta({}: Route.MetaArgs) {
   return [{ title: 'Registro | Via Connect' }];
 }
-export default function Register() {
+export default function RegisterScreen() {
   const navigate = useNavigate();
 
   //states
@@ -75,9 +77,7 @@ export default function Register() {
       });
 
       const res: { response: string } = await req.json();
-
       if (!req.ok) throw new Error(res.response);
-      
 
       form.reset();
       navigate('/home');
@@ -287,7 +287,7 @@ export default function Register() {
                     Registrando...
                   </>
                 ) : (
-                  'Crear cuenta'
+                  'Registrarse'
                 )}
               </Button>
             </form>
