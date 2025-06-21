@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { Eye, EyeOff, User, Mail, Lock, LoaderCircle } from 'lucide-react';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import {
   Card,
@@ -44,9 +44,10 @@ export function meta({}: Route.MetaArgs) {
 }
 export default function Register() {
   //states
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  //functions
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,18 +59,30 @@ export default function Register() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
+    try {
+      console.log(values);
 
-    // Simular una llamada a la API
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
+      const req = await fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-    console.log(values);
-    alert('¡Registro exitoso! Revisa la consola para ver los datos.');
+      const res = await req.json();
+      console.log(res);
+      // form.reset();
+    } catch (err) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    setIsLoading(false);
-    form.reset();
-  }
+  //watch
+  const watchValue = form.watch();
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
@@ -85,12 +98,15 @@ export default function Register() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+              {/* Name */}
               <FormField
                 control={form.control}
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nombre</FormLabel>
+                    <FormLabel className='gap-1'>
+                      Nombre <span className='text-red-500 font-bold'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <User className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
@@ -105,13 +121,15 @@ export default function Register() {
                   </FormItem>
                 )}
               />
-
+              {/* LastName */}
               <FormField
                 control={form.control}
                 name='lastName'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Apellido</FormLabel>
+                    <FormLabel className='gap-1'>
+                      Apellido <span className='text-red-500 font-bold'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <User className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
@@ -127,12 +145,16 @@ export default function Register() {
                 )}
               />
 
+              {/* Email */}
               <FormField
                 control={form.control}
                 name='email'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Correo electrónico</FormLabel>
+                    <FormLabel className='gap-1'>
+                      Correo electrónico
+                      <span className='text-red-500 font-bold'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <Mail className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
@@ -149,24 +171,35 @@ export default function Register() {
                 )}
               />
 
+              {/* Role */}
               <FormField
                 control={form.control}
                 name='role'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className=' flex justify-center'>Rol</FormLabel>
+                    <FormLabel className='justify-center gap-1'>
+                      Rol
+                      <span className='text-red-500 font-bold'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <div className='w-full mx-auto flex justify-center'>
                         <ToggleGroup
                           type='single'
                           variant='outline'
                           value={field.value}
+                          defaultValue={field.value}
                           onValueChange={(value) => field.onChange(value)}
                         >
-                          <ToggleGroupItem value='passenger'>
+                          <ToggleGroupItem
+                            value='passenger'
+                            className='cursor-pointer'
+                          >
                             Pasajero
                           </ToggleGroupItem>
-                          <ToggleGroupItem value='driver'>
+                          <ToggleGroupItem
+                            value='driver'
+                            className='cursor-pointer'
+                          >
                             Chofer
                           </ToggleGroupItem>
                         </ToggleGroup>
@@ -177,12 +210,16 @@ export default function Register() {
                 )}
               />
 
+              {/* Password */}
               <FormField
                 control={form.control}
                 name='password'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Contraseña</FormLabel>
+                    <FormLabel className='gap-1'>
+                      Contraseña
+                      <span className='text-red-500 font-bold'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <Lock className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
@@ -212,8 +249,29 @@ export default function Register() {
                 )}
               />
 
-              <Button type='submit' className='w-full' disabled={isLoading}>
-                {isLoading ? 'Registrando...' : 'Crear cuenta'}
+              <Button
+                type='submit'
+                className='w-full bg-blue-600 hover:bg-blue-700'
+                disabled={
+                  isLoading ||
+                  form.getFieldState('name').invalid ||
+                  form.getFieldState('lastName').invalid ||
+                  form.getFieldState('email').invalid ||
+                  form.getFieldState('role').invalid ||
+                  form.getFieldState('password').invalid ||
+                  watchValue.name.length < 2 ||
+                  watchValue.lastName.length < 1 ||
+                  watchValue.email.length < 8
+                }
+              >
+                {isLoading ? (
+                  <>
+                    <LoaderCircle className='w-4 h-4 animate-spin' />{' '}
+                    Registrando...
+                  </>
+                ) : (
+                  'Crear cuenta'
+                )}
               </Button>
             </form>
           </Form>
