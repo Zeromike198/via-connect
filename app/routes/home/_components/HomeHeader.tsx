@@ -1,20 +1,48 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
-import { API_URL } from '~/constants/constants';
+import { Skeleton } from '~/components/ui/skeleton';
+import { API_URL, USER_ID_KEY } from 'constants/constants';
+import type { IUserProfile } from 'entities/user.entity';
+import { toast } from 'sonner';
 
 export default function HomeHeader() {
+  //states
+  const [user, setUser] = useState<IUserProfile | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  //functions
   const handleGetUser = async () => {
     try {
-      const req = await fetch(`${API_URL}/user`);
-    } catch (err) {
+      setLoading(true);
+      const userID = localStorage.getItem(USER_ID_KEY);
+      if (userID === null) return;
+
+      const req = await fetch(`${API_URL}/user`, {
+        method: 'GET',
+        headers: {
+          Authorization: userID,
+        },
+      });
+
+      const res: { response?: string; user?: IUserProfile } = await req.json();
+
+      if (!req.ok) throw new Error(res.response!!);
+
+      setUser(res.user);
+    } catch (err: any) {
       console.log(err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   //effects
-  useEffect(() => {}, []);
+  useEffect(() => {
+    handleGetUser();
+  }, []);
 
   return (
     <header className='px-4 lg:px-6 h-16 flex items-center border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50'>
@@ -43,10 +71,14 @@ export default function HomeHeader() {
           Iniciar Sesión
         </Button>
 
-        <Avatar className='cursor-pointer'>
-          <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        {loading || user === undefined ? (
+          <Skeleton className='h-8 w-8 rounded-full bg-gray-400' />
+        ) : (
+          <Avatar className='cursor-pointer'>
+            <AvatarImage src={user.image} alt={user.name} />
+            <AvatarFallback>NF</AvatarFallback>
+          </Avatar>
+        )}
       </div>
     </header>
   );

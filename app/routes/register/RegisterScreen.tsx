@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import {
   Eye,
@@ -39,7 +37,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
-import { API_URL, USER_ID_KEY } from '~/constants/constants';
+import { API_URL, USER_ID_KEY } from 'constants/constants';
 
 const formSchema = z.object({
   name: z
@@ -101,7 +99,7 @@ export default function RegisterScreen() {
       if (!req.ok) throw new Error(res.response);
 
       localStorage.setItem(USER_ID_KEY, res.response);
-      
+
       form.reset();
       navigate('/home');
     } catch (err: any) {
