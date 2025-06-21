@@ -7,6 +7,7 @@ import type { Route } from './+types/root';
 import { useEffect, useState } from 'react';
 import { toast, Toaster } from 'sonner';
 import { Skeleton } from './components/ui/skeleton';
+import { USER_ID_KEY } from 'constants/constants';
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: 'Via Connect' }];
@@ -40,7 +41,9 @@ export default function LandingScreen() {
   };
 
   useEffect(() => {
-    handleGetUsers();
+    if (localStorage.getItem(USER_ID_KEY) === null) {
+      handleGetUsers();
+    } else navigate('/home');
   }, []);
 
   return (
