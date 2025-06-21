@@ -1,13 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import { Skeleton } from '~/components/ui/skeleton';
 import { API_URL, USER_ID_KEY } from 'constants/constants';
 import type { IUserProfile } from 'entities/user.entity';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
+import { DoorOpen, LogOut, UserRound } from 'lucide-react';
 
 export default function HomeHeader() {
+  const navigate = useNavigate();
   //states
   const [user, setUser] = useState<IUserProfile | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,6 +49,11 @@ export default function HomeHeader() {
     }
   };
 
+  const handleCloseSession = () => {
+    localStorage.removeItem(USER_ID_KEY);
+    navigate('/');
+  };
+
   //effects
   useEffect(() => {
     handleGetUser();
@@ -52,7 +67,7 @@ export default function HomeHeader() {
           Via Connect
         </span>
       </Link>
-      <nav className='ml-auto hidden md:flex gap-6'>
+      {/* <nav className='ml-auto hidden md:flex gap-6'>
         <Link
           className='text-sm font-medium hover:text-blue-600 transition-colors'
           to='#features'
@@ -65,19 +80,46 @@ export default function HomeHeader() {
         >
           Testimonios
         </Link>
-      </nav>
+      </nav> */}
       <div className='ml-4 flex gap-2'>
-        <Button variant='ghost' size='sm'>
+        {/* <Button variant='ghost' size='sm'>
           Iniciar Sesión
-        </Button>
+        </Button> */}
 
         {loading || user === undefined ? (
           <Skeleton className='h-8 w-8 rounded-full bg-gray-400' />
         ) : (
-          <Avatar className='cursor-pointer'>
-            <AvatarImage src={user.image} alt={user.name} />
-            <AvatarFallback>NF</AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className='cursor-pointer'>
+                <AvatarImage src={user.image} alt={user.name} />
+                <AvatarFallback>NF</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-42 mx-5'>
+              <DropdownMenuLabel>
+                <span className='font-semibold'>Opciones</span>
+                {/* {user.role === 'passenger' ? 'Pasajero' : 'Chofer'} */}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className='justify-between cursor-pointer'
+                onClick={() => navigate('/profile')}
+              >
+                <span className='font-medium'>Perfil</span> <UserRound />
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                className='justify-between cursor-pointer'
+                onClick={handleCloseSession}
+              >
+                <span className='font-medium text-destructive'>
+                  Cerrar Sesión
+                </span>{' '}
+                <LogOut className='text-destructive' />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </header>
