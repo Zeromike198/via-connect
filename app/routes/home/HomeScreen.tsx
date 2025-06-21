@@ -1,3 +1,9 @@
+import HomeHeader from './_components/HomeHeader';
+
 export default function HomeScreen() {
-  return <>corazon roto</>;
+  return (
+    <main className='flex flex-col min-h-screen'>
+      <HomeHeader />
+    </main>
+  );
 }

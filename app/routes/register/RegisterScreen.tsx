@@ -39,6 +39,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
+import { API_URL, USER_ID_KEY } from '~/constants/constants';
 
 const formSchema = z.object({
   name: z
@@ -88,7 +89,7 @@ export default function RegisterScreen() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const req = await fetch('http://localhost:3000/register', {
+      const req = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -99,6 +100,8 @@ export default function RegisterScreen() {
       const res: { response: string } = await req.json();
       if (!req.ok) throw new Error(res.response);
 
+      localStorage.setItem(USER_ID_KEY, res.response);
+      
       form.reset();
       navigate('/home');
     } catch (err: any) {

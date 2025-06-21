@@ -44,7 +44,7 @@ export default function LandingScreen() {
   }, []);
 
   return (
-    <div className='flex flex-col min-h-screen'>
+    <main className='flex flex-col min-h-screen'>
       <Toaster
         position='bottom-center'
         richColors
@@ -298,6 +298,6 @@ export default function LandingScreen() {
           </div>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
