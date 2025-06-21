@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import {
   Eye,
   EyeOff,
@@ -8,8 +10,6 @@ import {
   ArrowLeft,
   LogIn,
 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import {
   Card,
   CardContent,
@@ -97,6 +97,11 @@ export default function LoginScreen() {
 
   //watch
   const watchValue = form.watch();
+
+  //effects
+  useEffect(() => {
+    if (localStorage.getItem(USER_ID_KEY) !== null) navigate('/home');
+  }, []);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>

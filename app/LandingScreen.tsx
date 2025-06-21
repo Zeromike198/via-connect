@@ -77,7 +77,7 @@ export default function LandingScreen() {
           </Link>
         </nav>
         <div className='ml-4 flex gap-2'>
-          <Button variant='ghost' size='sm'>
+          <Button variant='ghost' size='sm' onClick={() => navigate('/login')}>
             Iniciar Sesión
           </Button>
           <Button
@@ -118,7 +118,11 @@ export default function LandingScreen() {
                   >
                     Registrarse
                   </Button>
-                  <Button variant='outline' size='lg'>
+                  <Button
+                    variant='outline'
+                    size='lg'
+                    onClick={() => navigate('/login')}
+                  >
                     Iniciar sesión
                   </Button>
                 </div>

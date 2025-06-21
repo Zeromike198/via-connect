@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Eye,
   EyeOff,
@@ -114,6 +114,11 @@ export default function RegisterScreen() {
 
   //watch
   const watchValue = form.watch();
+
+  //effects
+  useEffect(() => {
+    if (localStorage.getItem(USER_ID_KEY) !== null) navigate('/home');
+  }, []);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
@@ -307,11 +312,11 @@ export default function RegisterScreen() {
                   form.getFieldState('name').invalid ||
                   form.getFieldState('lastName').invalid ||
                   form.getFieldState('email').invalid ||
-                  !form.getFieldState('role').invalid ||
+                  form.getFieldState('role').invalid ||
                   form.getFieldState('password').invalid ||
                   watchValue.name.length < 2 ||
                   watchValue.lastName.length < 1 ||
-                  watchValue.email.length < 8 ||
+                  watchValue.email.length < 6 ||
                   watchValue.password.length < 5
                 }
               >

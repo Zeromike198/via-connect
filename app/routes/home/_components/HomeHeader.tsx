@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Skeleton } from '~/components/ui/skeleton';
 import { API_URL, USER_ID_KEY } from 'constants/constants';
@@ -15,9 +15,12 @@ import {
 } from '~/components/ui/dropdown-menu';
 import { LogOut, UserRound } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
 
 export default function HomeHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   //states
   const [user, setUser] = useState<IUserProfile | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,20 +70,17 @@ export default function HomeHeader() {
           Via Connect
         </span>
       </Link>
-      {/* <nav className='ml-auto hidden md:flex gap-6'>
-        <Link
-          className='text-sm font-medium hover:text-blue-600 transition-colors'
-          to='#features'
+
+      <nav className='flex gap-2'>
+        <Button
+          className={`${
+            location.pathname === '/profile' ? 'bg-blue-600' : ' bg-blue-500'
+          } hover:bg-blue-600 transition-colors`}
+          onClick={() => navigate('/profile')}
         >
-          Características
-        </Link>
-        <Link
-          className='text-sm font-medium hover:text-blue-600 transition-colors'
-          to='#testimonials'
-        >
-          Testimonios
-        </Link>
-      </nav> */}
+          Perfil
+        </Button>
+      </nav>
       <div className='flex gap-3 items-center'>
         {loading || user === undefined ? (
           <>
@@ -106,7 +106,9 @@ export default function HomeHeader() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className='justify-between cursor-pointer'
+                  className={`${
+                    location.pathname === '/profile' ? 'bg-gray-100' : ''
+                  } justify-between cursor-pointer`}
                   onClick={() => navigate('/profile')}
                 >
                   <span className='font-medium'>Perfil</span> <UserRound />
