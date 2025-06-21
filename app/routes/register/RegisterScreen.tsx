@@ -28,12 +28,18 @@ import { useNavigate } from 'react-router';
 import type { Route } from './+types/RegisterScreen';
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'El nombre debe tener al menos 2 caracteres.',
-  }),
-  lastName: z.string().min(2, {
-    message: 'El apellido debe tener al menos 2 caracteres.',
-  }),
+  name: z
+    .string({ message: 'El nombre debe ser un texto' })
+    .min(2, { message: 'El nombre debe tener al menos 2 caracteres.' })
+    .regex(/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/, {
+      message: 'El nombre solo puede contener letras y espacios.',
+    }),
+  lastName: z
+    .string({ message: 'El apellido debe ser un texto' })
+    .min(2, { message: 'El apellido debe tener al menos 2 caracteres.' })
+    .regex(/^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/, {
+      message: 'El apellido solo puede contener letras y espacios.',
+    }),
   email: z.string().email({
     message: 'Por favor ingresa un correo electrónico válido.',
   }),
@@ -46,6 +52,7 @@ const formSchema = z.object({
 export function meta({}: Route.MetaArgs) {
   return [{ title: 'Registro | Via Connect' }];
 }
+
 export default function RegisterScreen() {
   const navigate = useNavigate();
 
@@ -83,7 +90,7 @@ export default function RegisterScreen() {
       navigate('/home');
     } catch (err: any) {
       console.log(err);
-      toast.error(err.response, {
+      toast.error(err.message, {
         cancel: true,
       });
     } finally {

@@ -1,19 +1,75 @@
 describe('Register Page', () => {
-  it('send empty data', () => {
+  it('datos vacíos', () => {
     cy.visit('http://localhost:5173/register');
 
-    // cy.get('input[name="name"]').type('');
-    // cy.get('input[name="lastName"]').type('');
-    // cy.get('input[name="email"]').type('');
-    // cy.get('input[name="password"]').type('');
+    cy.contains('button', 'Registrarse').should('be.disabled');
+  });
+
+  it('datos incorrectos', () => {
+    cy.visit('http://localhost:5173/register');
+
+    cy.get('input[name="name"]').type('1332333');
+    cy.get('input[name="lastName"]').type('133332');
+    cy.get('input[name="email"]').type('correo incorrecto');
+    cy.get('input[name="password"]').type('Americaaa13@');
+
+    cy.contains('button', 'Registrarse').click();
+  });
+
+  it('datos numericos', () => {
+    cy.visit('http://localhost:5173/register');
+
+    cy.get('input[name="name"]').type('1332333');
+    cy.get('input[name="lastName"]').type('133332');
+    cy.get('input[name="email"]').type('example@gmail.com');
+    cy.get('input[name="password"]').type('Americaaa13@');
 
     cy.contains('button', 'Registrarse').click();
 
+    //mensajes de error
+    cy.contains('p', 'El nombre solo puede contener letras y espacios.').should(
+      'be.visible'
+    );
+    cy.contains(
+      'p',
+      'El apellido solo puede contener letras y espacios.'
+    ).should('be.visible');
   });
 
-  // it('send empty data', () => {
-  //   cy.visit('http://localhost:5173/');
-  // });
+  it('datos correctos', () => {
+    cy.intercept('POST', 'http://localhost:3000/register').as('postRegister');
+
+    cy.visit('http://localhost:5173/register');
+
+    cy.get('input[name="name"]').type('carlos');
+    cy.get('input[name="lastName"]').type('perez');
+    cy.get('input[name="email"]').type('carlos2@gmail.com');
+    cy.get('input[name="password"]').type('carlos12@');
+
+    cy.contains('button', 'Registrarse').click();
+
+    //datos enviados al servidor
+    cy.wait('@postRegister').its('response.statusCode').should('eq', 200);
+  });
+
+  it('correo existente', () => {
+    cy.intercept('POST', 'http://localhost:3000/register').as('postRegister');
+
+    cy.visit('http://localhost:5173/register');
+
+    cy.get('input[name="name"]').type('carlos');
+    cy.get('input[name="lastName"]').type('perez');
+    cy.get('input[name="email"]').type('carlos2@gmail.com');
+    cy.get('input[name="password"]').type('carlos12@');
+
+    cy.contains('button', 'Registrarse').click();
+
+    //datos enviados al servidor
+    cy.wait('@postRegister').its('response.statusCode').should('eq', 400);
+
+    //mensaje del servidor
+    cy.contains('div', 'El correo electrónico ya está registrado');
+  });
 });
 
 Cypress.on('uncaught:exception', (err) => {
@@ -25,23 +81,3 @@ Cypress.on('uncaught:exception', (err) => {
     return false; // evita que Cypress falle por este error
   }
 });
-
-
-// describe('Formulario de registro', () => {
-//   beforeEach(() => {
-//     cy.visit('http://localhost:5173/register');
-//   });
-
-//   it('no permite letras en el campo de edad', () => {
-//     cy.get('input[name="edad"]').type('abc').should('have.value', '');
-//   });
-
-//   it('envía correctamente con datos válidos', () => {
-//     cy.get('input[name="nombre"]').type('Minna');
-//     cy.get('input[name="edad"]').type('25');
-//     cy.get('button[type="submit"]').click();
-
-//     // Aquí podrías validar la redirección o un mensaje de éxito
-//     cy.url().should('include', '/gracias');
-//   });
-// });

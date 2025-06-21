@@ -31,7 +31,7 @@ export default function LandingScreen() {
       setTotalUser(parseInt(res.response));
     } catch (err: any) {
       console.log(err);
-      toast.error(err.response, {
+      toast.error(err.message, {
         cancel: true,
       });
     } finally {
