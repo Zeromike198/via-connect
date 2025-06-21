@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { Button } from '~/components/ui/button';
 import { Skeleton } from '~/components/ui/skeleton';
 import { API_URL, USER_ID_KEY } from 'constants/constants';
 import type { IUserProfile } from 'entities/user.entity';
@@ -14,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { DoorOpen, LogOut, UserRound } from 'lucide-react';
+import {  LogOut, UserRound } from 'lucide-react';
 
 export default function HomeHeader() {
   const navigate = useNavigate();

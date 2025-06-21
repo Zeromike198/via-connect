@@ -307,7 +307,7 @@ export default function RegisterScreen() {
                   form.getFieldState('name').invalid ||
                   form.getFieldState('lastName').invalid ||
                   form.getFieldState('email').invalid ||
-                  form.getFieldState('role').invalid ||
+                  !form.getFieldState('role').invalid ||
                   form.getFieldState('password').invalid ||
                   watchValue.name.length < 2 ||
                   watchValue.lastName.length < 1 ||
