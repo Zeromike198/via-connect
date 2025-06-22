@@ -10,7 +10,7 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import HomeHeader from '../../components/HomeHeader';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { RotateCcw } from 'lucide-react';
+import { Loader, RotateCcw } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import {
   Dialog,
@@ -24,19 +24,20 @@ import type { IUserProfile } from 'entities/user.entity';
 import { API_URL, USER_ID_KEY } from 'constants/constants';
 import { Skeleton } from '~/components/ui/skeleton';
 
-type ProfileData = {
+type FormProfile = {
   name: string;
   lastName: string;
   email: string;
   image: string;
-  password: string;
 };
 
 export default function ProfileScreen() {
-  const { register, handleSubmit, watch, setValue } = useForm<ProfileData>();
+  const { register, handleSubmit, watch, setValue } = useForm<FormProfile>();
 
   //states
   const [getUserLoading, setGetUserLoading] = useState<boolean>(false);
+  const [loadingImage, setLoadingImage] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   //functions
   const handleGetUser = async () => {
@@ -74,16 +75,43 @@ export default function ProfileScreen() {
 
   const handleRandomImage = async () => {
     try {
+      setLoadingImage(true);
       const randomImage = await fetch('https://picsum.photos/200/300');
       setValue('image', randomImage.url);
     } catch (err) {
       console.log(err);
       toast.error('Ha ocurrido un error.');
+    } finally {
+      setLoadingImage(false);
     }
   };
 
-  const onSubmit: SubmitHandler<ProfileData> = async (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormProfile> = async (data) => {
+    try {
+      const userID = localStorage.getItem(USER_ID_KEY);
+      if (userID === null) return;
+      setLoading(true);
+
+      const req = await fetch(`${API_URL}/user`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: userID,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const res: { response: string } = await req.json();
+
+      if (!req.ok) throw new Error(res.response);
+
+      toast.success('¡Perfil actualizado exitosamente!');
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   //effects
@@ -93,7 +121,12 @@ export default function ProfileScreen() {
 
   return (
     <main className='min-h-screen flex flex-col'>
-      <Toaster richColors closeButton />
+      <Toaster
+        richColors
+        closeButton
+        position='bottom-center'
+        visibleToasts={1}
+      />
       <HomeHeader />
 
       <section className='w-full flex justify-center mt-20'>
@@ -109,14 +142,21 @@ export default function ProfileScreen() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)}>
+                {/* image */}
                 <div className='flex justify-center my-1 relative mx-auto w-32'>
-                  {/* image  */}
                   <Dialog>
-                    <DialogTrigger asChild>
-                      <img
-                        src={watch('image')}
-                        className='w-28 h-28 rounded-full object-cover border-2 border-blue-400 cursor-pointer'
-                      />
+                    <DialogTrigger asChild type='button'>
+                      {loadingImage ? (
+                        <div className='w-28 h-28 rounded-full bg-gray-200 flex justify-center items-center border-2 border-blue-200'>
+                          <Loader className='animate-spin h-8 w-8' />{' '}
+                        </div>
+                      ) : (
+                        <img
+                          src={watch('image')}
+                          alt='user image'
+                          className='w-28 h-28 rounded-full object-cover border-2 border-blue-400 cursor-pointer'
+                        />
+                      )}
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
@@ -153,7 +193,7 @@ export default function ProfileScreen() {
 
                   {/* LastName */}
                   <div className='grid gap-2'>
-                    <Label htmlFor='lastName'>Nombre</Label>
+                    <Label htmlFor='lastName'>Apellido</Label>
                     <Input
                       id='lastName'
                       type='lastName'
