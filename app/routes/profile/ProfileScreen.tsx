@@ -110,7 +110,7 @@ export default function ProfileScreen() {
       if (!req.ok) throw new Error(res.response);
 
       toast.success('¡Perfil actualizado exitosamente!');
-      setUpdateProfile(true)
+      setUpdateProfile(true);
     } catch (err: any) {
       console.log(err);
       toast.error(err.message);
@@ -160,6 +160,7 @@ export default function ProfileScreen() {
                           src={watch('image')}
                           alt='user image'
                           className='w-28 h-28 rounded-full object-cover border-2 border-blue-400 cursor-pointer'
+                          id='user-image'
                         />
                       )}
                     </DialogTrigger>
