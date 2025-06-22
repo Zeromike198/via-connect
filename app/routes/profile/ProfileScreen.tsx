@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react';
 import type { IUserProfile } from 'entities/user.entity';
 import { API_URL, USER_ID_KEY } from 'constants/constants';
 import { Skeleton } from '~/components/ui/skeleton';
+import { useUpdateProfile } from 'store/useUpdateProfile';
 
 type FormProfile = {
   name: string;
@@ -33,6 +34,9 @@ type FormProfile = {
 
 export default function ProfileScreen() {
   const { register, handleSubmit, watch, setValue } = useForm<FormProfile>();
+
+  //global states
+  const { setUpdateProfile } = useUpdateProfile();
 
   //states
   const [getUserLoading, setGetUserLoading] = useState<boolean>(false);
@@ -106,6 +110,7 @@ export default function ProfileScreen() {
       if (!req.ok) throw new Error(res.response);
 
       toast.success('¡Perfil actualizado exitosamente!');
+      setUpdateProfile(true)
     } catch (err: any) {
       console.log(err);
       toast.error(err.message);
@@ -148,7 +153,7 @@ export default function ProfileScreen() {
                     <DialogTrigger asChild type='button'>
                       {loadingImage ? (
                         <div className='w-28 h-28 rounded-full bg-gray-200 flex justify-center items-center border-2 border-blue-200'>
-                          <Loader className='animate-spin h-8 w-8' />{' '}
+                          <Loader className='animate-spin h-8 w-8' />
                         </div>
                       ) : (
                         <img
@@ -164,6 +169,7 @@ export default function ProfileScreen() {
                       </DialogHeader>
                       <img
                         src={watch('image')}
+                        alt='user image'
                         className='rounded-lg w-full h-[400px] object-fill border-2 border-blue-400'
                       />
                     </DialogContent>
@@ -172,6 +178,7 @@ export default function ProfileScreen() {
                     className='absolute bottom-0 right-0 bg-blue-500 hover:bg-blue-600 rounded-full'
                     size='icon'
                     onClick={handleRandomImage}
+                    type='button'
                   >
                     <RotateCcw />
                   </Button>

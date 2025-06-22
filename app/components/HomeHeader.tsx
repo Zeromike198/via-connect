@@ -16,10 +16,14 @@ import {
 import { LogOut, UserRound } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
+import { useUpdateProfile } from 'store/useUpdateProfile';
 
 export default function HomeHeader() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  //global states
+  const { updateProfile, setUpdateProfile } = useUpdateProfile();
 
   //states
   const [user, setUser] = useState<IUserProfile | undefined>();
@@ -61,6 +65,13 @@ export default function HomeHeader() {
   useEffect(() => {
     handleGetUser();
   }, []);
+
+  useEffect(() => {
+    if (updateProfile) {
+      handleGetUser();
+      setUpdateProfile(false);
+    }
+  }, [updateProfile]);
 
   return (
     <header className='px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50'>
