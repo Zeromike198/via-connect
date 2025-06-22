@@ -1,5 +1,5 @@
 import { Toaster } from 'sonner';
-import HomeHeader from './_components/HomeHeader';
+import HomeHeader from '../../components/HomeHeader';
 import { useEffect } from 'react';
 import { USER_ID_KEY } from 'constants/constants';
 import { useNavigate } from 'react-router';
