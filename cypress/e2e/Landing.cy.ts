@@ -3,6 +3,7 @@ describe('Landing Page', () => {
     //interceptar peticion al servidor
     cy.intercept('GET', 'http://localhost:3000/').as('getUsers');
 
+    //visitamos la landing page
     cy.visit('http://localhost:5173/');
 
     //verificar que la data llegue con exito
