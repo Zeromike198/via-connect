@@ -5,7 +5,7 @@ describe('Profile Page', () => {
     cy.intercept('GET', '**/user').as('getProfile');
     cy.visit('http://localhost:5173/profile', {
       onBeforeLoad(win) {
-        win.localStorage.setItem('userID', '17');
+        win.localStorage.setItem('userID', '20');
       },
     });
     //esperar la respuesta
@@ -34,14 +34,4 @@ describe('Profile Page', () => {
     //cerrar modal
     cy.get('.ring-offset-background').click()
   });
-});
-
-Cypress.on('uncaught:exception', (err) => {
-  if (
-    /hydration/i.test(err.message) ||
-    /Minified React error #418/.test(err.message) ||
-    /Minified React error #423/.test(err.message)
-  ) {
-    return false; // evita que Cypress falle por este error
-  }
 });

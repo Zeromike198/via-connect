@@ -80,14 +80,3 @@ describe('Register Page', () => {
     cy.contains('div', 'El correo electrónico ya está registrado');
   });
 });
-
-// Previene que ciertos errores de React interrumpan las pruebas
-Cypress.on('uncaught:exception', (err) => {
-  if (
-    /hydration/i.test(err.message) ||
-    /Minified React error #418/.test(err.message) ||
-    /Minified React error #423/.test(err.message)
-  ) {
-    return false;
-  }
-});
