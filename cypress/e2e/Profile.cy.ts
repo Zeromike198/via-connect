@@ -29,7 +29,7 @@ describe('Profile Page', () => {
     cy.get('img#user-image').click();
 
     //verificar que el modal este visible
-    cy.get('#radix-«r5»').should('be.visible')
+    cy.get('#radix-«r2»').should('be.visible')
 
     //cerrar modal
     cy.get('.ring-offset-background').click()
