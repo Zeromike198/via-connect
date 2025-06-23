@@ -28,28 +28,20 @@ export const links: Route.LinksFunction = () => [
 ];
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    // <html lang='es'>
-    //   <head>
-    //     <meta charSet='utf-8' />
-    //     <meta name='viewport' content='width=device-width, initial-scale=1' />
-    //     <link rel='icon' href='/favicon.png' />
-    //     <Meta />
-    //     <Links />
-    //   </head>
-    //   <body>
-    //     {children}
-    //     <ScrollRestoration />
-    //     <Scripts />
-    //   </body>
-    // </html>
-
-    <body>
-      <Meta />
-      <Links />
-      {children}
-      <ScrollRestoration />
-      <Scripts />
-    </body>
+    <html lang='es'>
+      <head>
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <link rel='icon' href='/favicon.png' />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   );
 }
 
