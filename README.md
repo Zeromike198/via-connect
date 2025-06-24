@@ -2,7 +2,7 @@
 
 Via Connect es una aplicación web de transporte que conecta a pasajeros con choferes de manera sencilla y eficiente. Olvídate de las esperas y los problemas: con Via Connect, llegar a tu destino es más fácil que nunca. ¿Listo para probarla?
 
-## Features
+<!-- ## Features
 
 - 🚀 Server-side rendering
 - ⚡️ Hot Module Replacement (HMR)
@@ -38,4 +38,8 @@ This template comes with [Tailwind CSS](https://tailwindcss.com/) already config
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router. -->
+
+## Presentación
+
+Video: <https://youtu.be/XtOoaJv3r-4?si=vDr6QzlHIFU7FDwm>
